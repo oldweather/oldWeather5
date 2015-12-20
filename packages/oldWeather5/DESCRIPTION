@@ -1,0 +1,8 @@
+Package: oldWeather5
+Title: What the package does (one line)
+Version: 0.1
+Authors@R: 'Philip Brohan <philip@brohan.org> [aut, cre]'
+Description: What the package does (one paragraph)
+Depends: R (>= 3.2.2)
+License: Apache
+LazyData: true
