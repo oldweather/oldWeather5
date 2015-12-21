@@ -2,20 +2,19 @@
 #'
 #' Keeps the data internally in a data frame
 #'
-#'
 #' @export
 #' @param file file to read data from.
-#' @return data frame - 1 row per record, column names as in the file.
+#' @return list of data frames - separate for core, metadata, and subjects.
 ReadClassifications<-function(file) {
     l<-read.csv(file=file,as.is=TRUE)
     # string dates to POSIXt
     l$created_at <- lubridate::ymd_hms(l$created_at)
     # unpack the metadata into a separate frame
-    meta<-UnpackMeta(l$metadata)
+    meta<-UnpackCMeta(l$metadata)
     # same with subjects
-    subject<-UnpackSubject(l$subject)
+    subject<-UnpackCSubject(l$subject)
     # and annotations
-    annotations<-UnpackAnnotation(l$annotations)
+    annotations<-UnpackCAnnotation(l$annotations)
    return(list(core=l,meta=meta,subject=subject,annotations=annotations))
 }
   
@@ -27,7 +26,7 @@ ReadClassifications<-function(file) {
 #'
 #' @param meta - Vector of JSON strings.
 #' @return data frame, name::value pairs from the JSON
-UnpackMeta<-function(meta) {
+UnpackCMeta<-function(meta) {
   len<-length(meta)
   result<-list(started_at=character(len),
                finished_at=character(len),
@@ -67,7 +66,7 @@ UnpackMeta<-function(meta) {
 #'
 #' @param subject - Vector of JSON strings.
 #' @return data frame, name::value pairs from the JSON
-UnpackSubject<-function(subject) {
+UnpackCSubject<-function(subject) {
   len<-length(subject)
   result<-list(number=character(len),
                retired=logical(len),
@@ -109,7 +108,7 @@ UnpackSubject<-function(subject) {
 #'
 #' @param annotation - Vector of JSON strings.
 #' @return data frame, name::value pairs from the JSON
-UnpackAnnotation<-function(annotation) {
+UnpackCAnnotation<-function(annotation) {
   len<-length(annotation)
   result<-list()
   for(i in seq_along(annotation)) {

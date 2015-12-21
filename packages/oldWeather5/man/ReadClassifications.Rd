@@ -10,7 +10,7 @@ ReadClassifications(file)
 \item{file}{file to read data from.}
 }
 \value{
-data frame - 1 row per record, column names as in the file.
+list of data frames - separate for core, metadata, and subjects.
 }
 \description{
 Keeps the data internally in a data frame
