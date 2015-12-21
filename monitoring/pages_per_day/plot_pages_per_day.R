@@ -16,7 +16,7 @@ tics<-pretty(ts$V1,n=7)
 grid.xaxis(at=tics,label=attr(tics,'label'),main=T)
 grid.text('Date',y=unit(-3,"lines"))
 grid.yaxis(main=T)
-grid.text('No. of users',x=unit(-3.5,"lines"), rot=90)
+grid.text('No. of pages',x=unit(-3.5,"lines"), rot=90)
 gp_blue  = gpar(col=rgb(0,0,1,1),fill=rgb(0,0,1,1))
 grid.lines(x=unit(ts$V1,"native"),y=unit(ts$V2,'native'),
                gp=gp_blue)
