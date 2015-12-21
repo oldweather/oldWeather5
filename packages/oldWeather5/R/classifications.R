@@ -9,7 +9,7 @@
 ReadClassifications<-function(file) {
     l<-read.csv(file=file,as.is=TRUE)
     # string dates to POSIXt
-    l$created_at <- ymd_hms(l$created_at)
+    l$created_at <- lubridate::ymd_hms(l$created_at)
     # unpack the metadata into a separate frame
     meta<-UnpackMeta(l$metadata)
     # same with subjects
@@ -42,7 +42,7 @@ UnpackMeta<-function(meta) {
   result$viewport<-list()
   result$subject_dimensions<-list()
   for(i in seq_along(meta)) {
-      l<-fromJSON(meta[i])
+      l<-rjson::fromJSON(meta[i])
       for(n in names(l)) {
           if(is.null(result[[n]])) {
               stop("Excess metadata element ",n," line ",i)
@@ -54,8 +54,8 @@ UnpackMeta<-function(meta) {
           }
       }
   }
-  result$started_at <- ymd_hms(result$started_at)
-  result$finished_at <- ymd_hms(result$finished_at)
+  result$started_at <- lubridate::ymd_hms(result$started_at)
+  result$finished_at <- lubridate::ymd_hms(result$finished_at)
   return(result)
 }
     
@@ -83,7 +83,7 @@ UnpackSubject<-function(subject) {
       is.na(result[[n]])<-TRUE
   }
   for(i in seq_along(subject)) {
-      l<-fromJSON(subject[i])
+      l<-rjson::fromJSON(subject[i])
       result$number[i]=names(l)
       for(n in names(l[[result$number[i]]])) {
           if(is.null(result[[n]])) {
@@ -113,7 +113,7 @@ UnpackAnnotation<-function(annotation) {
   len<-length(annotation)
   result<-list()
   for(i in seq_along(annotation)) {
-      result[[i]]<-fromJSON(annotation[i])
+      result[[i]]<-rjson::fromJSON(annotation[i])
   }
   return(result)
 }

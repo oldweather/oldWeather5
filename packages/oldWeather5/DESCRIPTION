@@ -1,8 +1,13 @@
 Package: oldWeather5
-Title: What the package does (one line)
+Title: Analysis code for oldWeather-Panoptes
 Version: 0.1
 Authors@R: 'Philip Brohan <philip@brohan.org> [aut, cre]'
-Description: What the package does (one paragraph)
-Depends: R (>= 3.2.2)
+Description: The science output produced by oldWeather-Panoptes 
+ (www.oldweather.org) is in the form of csv tables and JSON strings.
+ This package provides functions to read that data into R and analyse it.
+Depends: 
+    R (>= 3.0.1),
+    lubridate,
+    rjson
 License: Apache
 LazyData: true
