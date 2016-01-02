@@ -18,11 +18,25 @@ while(current.time<end.time) {
   w<-which(classifications$meta$started_at<=
                        (current.time+seconds(time.resolution/2)) &
            classifications$meta$finished_at>=
-                       (current.time-seconds(time.resolution/2)))
+           (current.time-seconds(time.resolution/2)))
+  # check an annotation occurred within the minute
+  count<-0
+  for(i in w) {
+      for(n in seq_along(classifications$annotations[[i]])) {
+          if(!is.null(classifications$annotations[[i]][[n]]$timestamp)) {
+              ts <- as.POSIXct(classifications$annotations[[i]][[n]]$timestamp/1000,
+                               origin='1970-01-01:00:00:00')
+              if(abs(ts-current.time)>=time.resolution/2) {
+                  count<-count+1
+                  break
+              }
+          }
+      }
+  }
   cat(sprintf("%04d-%02d-%02d:%02d:%02d:%02d %d\n",year(current.time),
                  month(current.time),day(current.time),hour(current.time),
                  minute(current.time),as.integer(second(current.time)),
-                 length(w)),
+                 count),
                   file="concurrent.users.txt",append=TRUE)
 }   
 

@@ -8,6 +8,8 @@ Description: The science output produced by oldWeather-Panoptes
 Depends: 
     R (>= 3.0.1),
     lubridate,
-    rjson
+    rjson,
+    grid,
+    jpeg
 License: Apache
 LazyData: true
