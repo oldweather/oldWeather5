@@ -59,12 +59,12 @@ Layout<-function(x,y,n,aspect=1.5,border=0.05) {
   }
     viewports<-list()
     vp<-1
-    x.range<-1/layout[1]*(1-border)
-    y.range<-1/layout[2]*(1-border)
+    x.range<-(1/layout[1]*(1-border))*x
+    y.range<-(1/layout[2]*(1-border))*y
     for(j in layout[2]:1) {
-        y.offset<-(j-1)/layout[2]+border/4
+        y.offset<-((j-1)/layout[2]+border/4)*y
         for(i in 1:layout[1]) {
-            x.offset<-(i-1)/layout[1]+border/4
+            x.offset<-((i-1)/layout[1]+border/4)*x
             viewports[[vp]]<-c(x.offset,y.offset,x.range,y.range)
             vp<-vp+1
         }
@@ -94,9 +94,9 @@ Layout<-function(x,y,n,aspect=1.5,border=0.05) {
 #'   showing which classification is in each viewport;
 #'   viewports - list length nx*ny giving x,y, width and height
 #'   for each page viewport.
-UpdateLayout<-function(old.layout,x,y,cls,aspect,border) {
+UpdateLayout<-function(old.layout,x,y,cls,aspect=1.5,border=0.05) {
     
-    new.layout<-layout(x,y,length(cls),aspect,header)
+    new.layout<-Layout(x,y,length(cls),aspect,border)
     # Simple case - same size
     if(!is.null(old.layout) &&
        old.layout$nx==new.layout$nx &&
@@ -233,20 +233,20 @@ img.scale<-1/max(img.width/pg.width,img.height/pg.height)
 #' @param pg.height - viewport height in pixels
 #' @param before - POSIXt date-time, if not NULL (default), draw
 #'     only annotations from this time or earlier.
-DrawLayout<-function(classifications, subjects, layout, pg.w, pg.h,before=NULL) {
-    for(i in seq_along(layout$classifications)) {
-        if(is.na(layout$classifications[i])) next
-        pushViewport(viewport(width=unit(layout$viewports[[i]][3],'npc'),
-                              xscale=c(0, pg.w*layout$viewports[[i]][3]),
-                              height=unit(layout$viewports[[i]][4],'npc'),
-                              yscale=c(0,pg.h*layout$viewports[[i]][4]),
-                             x=unit(layout$viewports[[i]][1],'npc'),
-                             y=unit(layout$viewports[[i]][2],'npc'),
+DrawLayout<-function(classifications, subjects, layout,before=NULL) {
+    for(i in seq_along(layout$contents)) {
+        if(is.na(layout$contents[i])) next
+        pushViewport(viewport(width=unit(layout$viewports[[i]][3],'native'),
+                              xscale=c(0, layout$viewports[[i]][3]),
+                              height=unit(layout$viewports[[i]][4],'native'),
+                              yscale=c(0,layout$viewports[[i]][4]),
+                             x=unit(layout$viewports[[i]][1],'native'),
+                             y=unit(layout$viewports[[i]][2],'native'),
                              just=c("left","bottom")))
 
-        DrawClassification(classifications, subjects, layout$classifications[i],
-                           pg.w*layout$viewports[[i]][3],
-                           pg.h*layout$viewports[[i]][4],before=before)
+        DrawClassification(classifications, subjects, layout$contents[i],
+                           layout$viewports[[i]][3],
+                           layout$viewports[[i]][4],before=before)
         popViewport()
     }
 }

@@ -61,7 +61,7 @@ FindTypes<-function(classifications) {
 #' @param start_date POSIXt date for selection period start
 #' @param end_date POSIXt date for selection period end
 #' @param strict Boolean, if TRUE (default) check an annotation occured in the range. 
-#' @return subset of classifications list in the selected date range.
+#' @return vector of indices of classifications in the selected date range.
 GetClassificationsByDate<-function(classifications,start_date,end_date,strict=TRUE) {
     w<-which(classifications$meta$started_at<=end_date &
              classifications$meta$finished_at>start_date)
@@ -81,8 +81,7 @@ GetClassificationsByDate<-function(classifications,start_date,end_date,strict=TR
       }
       w<-w2
    }
-    return(list(core=classifications$core[w,],meta=classifications$meta[w,],
-                annotations=classifications$annotations[w]))
+    return(w)
 }
 
 #' Get a raster image of a selected page
