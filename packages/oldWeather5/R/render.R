@@ -75,6 +75,30 @@ Layout<-function(x,y,n,aspect=1.5,border=0.05) {
   return(n.l)
 }
 
+
+#' Interpolate classification positions between two layouts
+#'
+#' When changing the number of pages shown at once, need
+#' to shift between two layouts.
+#'
+#' @export
+#' @param old.layout - starting layout
+#' @param new.layout - ending layout
+#' @param fraction - 0-1, fraction of new layout
+#' @param cls - vector of classification indices
+#' @return interpolated layout
+InterpolateLayout<-function(old.layout,new.layout,fraction) {
+    i.layout<-new.layout
+    for(i in seq_along(new.layout$contents)) {
+        if(new.layout$contents[i] %in% old.layout$contents[i]) {
+            i.layout$viewports[[i]]<-
+                new.layout$viewports[[i]]*fraction+
+                    old.layout$viewports[[i]]*(1-fraction)
+        } else is.na(i.layout$contents[i])<-TRUE
+    }
+    return(i.layout)
+}
+
 #' Update a layout with a new set of classifications
 #'
 #' Keep the same classifications in the same viewports
@@ -117,11 +141,11 @@ UpdateLayout<-function(old.layout,x,y,cls,aspect=1.5,border=0.05) {
         for(i in seq_along(cls)) {
             new.layout$contents[i]<-cls[i]
         }
-    }
+     }
     return(new.layout)
-}
+ }
 
-  
+
 #' Draw a single classification
 #'
 #' Call from inside a viewport of the size given in the call

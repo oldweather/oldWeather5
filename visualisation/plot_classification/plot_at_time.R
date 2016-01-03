@@ -4,6 +4,7 @@ library(oldWeather5)
 
 classifications<-ReadClassifications('../../data-exports/classifications.csv')
 subjects<-ReadSubjects('../../data-exports/subjects.csv')
+classifications<-InterpolateTimestamps(classifications)
 
 p.time<-ymd_hms('2015-12-04:02:00:00')
 c.set<-GetClassificationsByDate(classifications,p.time-seconds(30),p.time+seconds(30))

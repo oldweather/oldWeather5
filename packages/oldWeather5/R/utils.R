@@ -20,7 +20,8 @@ InterpolateTimestamps<-function(classifications) {
          }
          g<-which(!is.na(has.ts))
          if(length(g)==0) {
-             classifications$annotations[[i]][[1]]$timestamp<-as.numeric(classifications$meta$started_at[i])*1000
+             classifications$annotations[[i]][[1]]$timestamp<-
+                    as.numeric(classifications$meta$started_at[i])*1000
              has.ts[1]<-classifications$annotations[[i]][[1]]$timestamp
              g<-which(!is.na(has.ts))
          }
