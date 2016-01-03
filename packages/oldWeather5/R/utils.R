@@ -1,5 +1,54 @@
 # Utility functions for oW5 data.
 
+#' Interpolate timestamps where needed
+#'
+#' Some annotations are missing a timestamp - provide them by interpolation
+#'
+#' Gap between timestamps is smaller of 2 seconds and interpolation between
+#' previous and next.
+#'
+#' @export
+#' @param classifications list from \code{\link{readClassifications}}.
+#' @return modified list with timestamps for all annotations.
+InterpolateTimestamps<-function(classifications) {
+    for(i in seq_along(classifications$annotations)) {
+         has.ts<-rep(NA,length(classifications$annotations[[i]]))
+         for(n in seq_along(classifications$annotations[[i]])) {
+             if(!is.null(classifications$annotations[[i]][[n]]$timestamp)) {
+                 has.ts[i]<-classifications$annotations[[i]][[n]]$timestamp
+             }
+         }
+         g<-which(!is.na(has.ts))
+         if(length(g==0)) next
+         if(length(is.na(has.ts))>0) {
+             w<-which(is.na(has.ts))
+             for(n in w) {
+                 if(n<min(g)) {
+                     m<-min(g)
+                     classifications$annotations[[i]][[n]]$timestamp <-
+                         classifications$annotations[[i]][[m]]$timestamp-(m-n)*2000
+                 }
+                 if(n>max(g)) {
+                     m<-max(g)
+                     classifications$annotations[[i]][[n]]$timestamp <-
+                         classifications$annotations[[i]][[m]]$timestamp+(n-m)*2000
+                 }
+                 if(n<max(g) && n>min(g)) {
+                     below<-max(which(g<n))
+                     above<-min(which(g>n))
+                     increment<-((n-below)/(above-below))*
+                         (classifications$annotations[[i]][[above]]$timestamp-
+                          classifications$annotations[[i]][[below]]$timestamp)
+                     if(abs(increment)>(n-below)*2000) increment<-(n-below)*2000
+                     classifications$annotations[[i]][[n]]$timestamp <-
+                         classifications$annotations[[i]][[below]]$timestamp+increment
+                 }
+             }
+         }
+     }
+    return(classifications)
+}
+
 #' Make some more plausible start and end dates
 #'
 #' Some classifications have a very long gap between
