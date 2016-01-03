@@ -15,33 +15,36 @@ InterpolateTimestamps<-function(classifications) {
          has.ts<-rep(NA,length(classifications$annotations[[i]]))
          for(n in seq_along(classifications$annotations[[i]])) {
              if(!is.null(classifications$annotations[[i]][[n]]$timestamp)) {
-                 has.ts[i]<-classifications$annotations[[i]][[n]]$timestamp
+                 has.ts[n]<-classifications$annotations[[i]][[n]]$timestamp
              }
          }
          g<-which(!is.na(has.ts))
-         if(length(g==0)) next
-         if(length(is.na(has.ts))>0) {
+         if(length(g)==0) {
+             classifications$annotations[[i]][[1]]$timestamp<-as.numeric(classifications$meta$started_at[i])*1000
+             has.ts[1]<-classifications$annotations[[i]][[1]]$timestamp
+             g<-which(!is.na(has.ts))
+         }
+         if(length(which(is.na(has.ts)))>0) {
              w<-which(is.na(has.ts))
              for(n in w) {
                  if(n<min(g)) {
                      m<-min(g)
                      classifications$annotations[[i]][[n]]$timestamp <-
-                         classifications$annotations[[i]][[m]]$timestamp-(m-n)*2000
+                         has.ts[m]-(m-n)*2000
                  }
                  if(n>max(g)) {
                      m<-max(g)
                      classifications$annotations[[i]][[n]]$timestamp <-
-                         classifications$annotations[[i]][[m]]$timestamp+(n-m)*2000
+                         has.ts[m]+(n-m)*2000
                  }
                  if(n<max(g) && n>min(g)) {
-                     below<-max(which(g<n))
-                     above<-min(which(g>n))
+                     below<-max(g[g<n])
+                     above<-min(g[g>n])
                      increment<-((n-below)/(above-below))*
-                         (classifications$annotations[[i]][[above]]$timestamp-
-                          classifications$annotations[[i]][[below]]$timestamp)
+                         (has.ts[above]-has.ts[below])
                      if(abs(increment)>(n-below)*2000) increment<-(n-below)*2000
                      classifications$annotations[[i]][[n]]$timestamp <-
-                         classifications$annotations[[i]][[below]]$timestamp+increment
+                         has.ts[below]+increment
                  }
              }
          }
