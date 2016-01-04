@@ -32,6 +32,7 @@ page.height<-1080
 
 begin<-ymd_hms('2015-12-03 16:25:00')
 end<-ymd_hms('2015-12-03 17:25:00')
+step<-seconds(1)
 current<-begin
 current.layout<-NULL
 while(current<end) {
@@ -42,7 +43,7 @@ while(current<end) {
     w<-GetClassificationsByDate(classifications,current-seconds(120),current+seconds(120))
     new.layout<-UpdateLayout(current.layout,page.width,page.height,w)
     if(!is.null(current.layout) && length(new.layout$contents)!=length(current.layout$contents)) {
-        SwitchLayout(current.layout,new.layout,current,12)
+        SwitchLayout(current.layout,new.layout,current-step,12)
     }
     current.layout<-new.layout
     
@@ -53,6 +54,6 @@ while(current<end) {
     DrawLabel(as.character(current))
     dev.off()
                 
-    current<-current+seconds(1)
+    current<-current+step
 }
                 
