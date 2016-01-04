@@ -91,6 +91,7 @@ Layout<-function(x,y,n,aspect=1.5,border=0.05) {
 InterpolateLayout<-function(old.layout,new.layout,fraction) {
     i.layout<-new.layout
     for(i in seq_along(new.layout$contents)) {
+        if(is.na(new.layout$contents[i])) next
         if(new.layout$contents[i] %in% old.layout$contents) {
             w<-which(old.layout$contents==new.layout$contents[i])
             i.layout$viewports[[i]]<-
