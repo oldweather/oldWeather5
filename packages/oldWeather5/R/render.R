@@ -15,7 +15,7 @@ DrawLabel<-function(label) {
                       y=unit(0.01,'npc'),
                       just=c('right','bottom'),
                       gp=label.gp)
-   bg.gp<-grid::gpar(col='white',fill='white')
+   bg.gp<-grid::gpar(col=par('bg'),fill=par('bg'))
    h<-heightDetails(tg)
    w<-widthDetails(tg)
    xp<-grid::unit(0.99,'npc')

@@ -14,7 +14,7 @@ SwitchLayout<-function(old.layout,new.layout,current,steps) {
                 Sys.getenv('SCRATCH'),
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current),i)
-    png(filename=fn,width=page.width,height=page.height,bg='white',,pointsize=24)
+    png(filename=fn,width=page.width,height=page.height,bg=bg.colour,pointsize=24)
      pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
      i.layout<-InterpolateLayout(old.layout,new.layout,(i-0.5)/steps)
     DrawLayout(classifications,subjects,i.layout,before=current)
@@ -29,6 +29,7 @@ SwitchLayout<-function(old.layout,new.layout,current,steps) {
 # First test video
 page.width<-1080*4/3
 page.height<-1080
+bg.colour<-rgb(243/255,236/255,226/255,1)
 
 begin<-ymd_hms('2015-12-03 16:25:00')
 end<-ymd_hms('2015-12-03 17:25:00')
@@ -47,7 +48,7 @@ while(current<end) {
     }
     current.layout<-new.layout
     
-    png(filename=fn,width=page.width,height=page.height,bg='white',,pointsize=24)
+    png(filename=fn,width=page.width,height=page.height,bg=bg.colour,pointsize=24)
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     DrawLayout(classifications,subjects,current.layout,before=current)
     popViewport()
