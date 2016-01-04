@@ -30,8 +30,8 @@ SwitchLayout<-function(old.layout,new.layout,current,steps) {
 page.width<-1080*4/3
 page.height<-1080
 
-begin<-ymd_hms('2015-12-04 02:30:00')
-end<-ymd_hms('2015-12-04 02:32:00')
+begin<-ymd_hms('2015-12-03 16:25:00')
+end<-ymd_hms('2015-12-03 17:25:00')
 current<-begin
 current.layout<-NULL
 while(current<end) {
@@ -40,9 +40,9 @@ while(current<end) {
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current))
     w<-GetClassificationsByDate(classifications,current-seconds(120),current+seconds(120))
-    new.layout<-UpdateLayout(current.layout,w)
-    if(length(new.layout$contents)!=current.layout$contents) {
-        SwitchLayout(old.layout,new.layout,current,12)
+    new.layout<-UpdateLayout(current.layout,page.width,page.height,w)
+    if(!is.null(current.layout) && length(new.layout$contents)!=length(current.layout$contents)) {
+        SwitchLayout(current.layout,new.layout,current,12)
     }
     current.layout<-new.layout
     

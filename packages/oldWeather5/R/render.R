@@ -48,6 +48,7 @@ DrawLabel<-function(label) {
 #'   viewports - list length nx*ny giving x,y, width and height
 #'   for each page viewport.
 Layout<-function(x,y,n,aspect=1.5,border=0.05) {
+  if(n==0) n<-1        
   layout<-c(n,1)
   scale<-min(x/layout[1],y/layout[2]*aspect)
   height.fraction<-layout[2]*aspect*scale/y
@@ -90,10 +91,11 @@ Layout<-function(x,y,n,aspect=1.5,border=0.05) {
 InterpolateLayout<-function(old.layout,new.layout,fraction) {
     i.layout<-new.layout
     for(i in seq_along(new.layout$contents)) {
-        if(new.layout$contents[i] %in% old.layout$contents[i]) {
+        if(new.layout$contents[i] %in% old.layout$contents) {
+            w<-which(old.layout$contents==new.layout$contents[i])
             i.layout$viewports[[i]]<-
                 new.layout$viewports[[i]]*fraction+
-                    old.layout$viewports[[i]]*(1-fraction)
+                    old.layout$viewports[[w]]*(1-fraction)
         } else is.na(i.layout$contents[i])<-TRUE
     }
     return(i.layout)
