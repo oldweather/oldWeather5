@@ -8,7 +8,7 @@
 #' previous and next.
 #'
 #' @export
-#' @param classifications list from \code{\link{readClassifications}}.
+#' @param classifications list from \code{\link{ReadClassifications}}.
 #' @return modified list with timestamps for all annotations.
 InterpolateTimestamps<-function(classifications) {
     for(i in seq_along(classifications$annotations)) {
@@ -60,7 +60,7 @@ InterpolateTimestamps<-function(classifications) {
 #' from the annotation timestamps.
 #'
 #' @export
-#' @param classifications list from \code{\link{readClassifications}}.
+#' @param classifications list from \code{\link{ReadClassifications}}.
 #' @return modified list with added $meta$new_started_at and $meta$new_finished_at components.
 FixStartAndFinish<-function(classifications) {
     classifications$meta$new_started_at<-rep(NA,length(classifications$meta$started_at))
@@ -88,7 +88,7 @@ FixStartAndFinish<-function(classifications) {
 #' Get the names of each type of classification in the database.
 #'
 #' @export
-#' @param classifications list from \code{\link{readClassifications}}.
+#' @param classifications list from \code{\link{ReadClassifications}}.
 #' @return names for each classification type.
 FindTypes<-function(classifications) {
     types<-list()
@@ -103,6 +103,26 @@ FindTypes<-function(classifications) {
     return(names(types))
 }
 
+#' Is this in the annotation workflow, or transcription
+#'
+#' Search the annotations for 'contents'
+#'
+#' @export
+#' @param classifications list from \code{\link{ReadClassifications}}.
+#' @return modified list with added $meta$is_transcription and t components.
+IsTranscription<-function(classifications) {
+    classifications$meta$is_transcription<-rep(FALSE,length(classifications$meta$started_at))
+    for(i in seq_along(classifications$annotations)) {
+        for(n in seq_along(classifications$annotations[[i]])) {
+            if(!is.null(classifications$annotations[[i]][[n]]$contents)
+               classifications$meta$is_transcription[i]<-TRUE
+               break
+            }
+        }
+    }
+    return(classifications)
+}
+
 #' Get classifications by date
 #'
 #' Extract a subset of the classifications active between two given dates.
@@ -110,7 +130,7 @@ FindTypes<-function(classifications) {
 #' Optionally check that an annotation occurred between the two dates (slow).
 #'
 #' @export
-#' @param classifications list from \code{\link{readClassifications}}.
+#' @param classifications list from \code{\link{ReadClassifications}}.
 #' @param start_date POSIXt date for selection period start
 #' @param end_date POSIXt date for selection period end
 #' @param strict Boolean, if TRUE (default) check an annotation occured in the range. 
@@ -142,14 +162,14 @@ GetClassificationsByDate<-function(classifications,start_date,end_date,strict=TR
 #' Download the image from the website (unless it's already cached).
 #'
 #' @export
-#' @param subjects list from \code{\link{readSubjects}}.
+#' @param subjects list from \code{\link{ReadSubjects}}.
 #' @param i index of the selected subject
 #' @return raster of the image.
 GetPageImage<-function(subjects,i) {
   if(Sys.getenv('SCRATCH')=="") stop("Unspecified SCRATCH directory")
   cache.dir<-sprintf("%s/oW5.cache/",Sys.getenv('SCRATCH'))
   if(!file.exists(cache.dir)) dir.create(cache.dir,recursive=TRUE)
-  local.name<-subjects$meta$image[[i]]
+  local.name<-as.character(subjects$core$subject_id[i])
   url<-subjects$locations[[i]][['0']]
   local.filename<-sprintf("%s/%s",cache.dir,local.name)
   if(file.exists(local.filename) && file.info(local.filename)$size>0) {

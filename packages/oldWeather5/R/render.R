@@ -166,7 +166,8 @@ UpdateLayout<-function(old.layout,x,y,cls,aspect=1.5,border=0.05) {
 DrawClassification<-function(classifications, subjects, n,
                              pg.width, pg.height,before=NULL) {
 
-sub.i<-which(subjects$meta$image==classifications$subject$image[n])
+sub.i<-which(subjects$core$subject_id==classifications$subject$number[n] |
+             subjects$meta$image==classifications$subject$image[n])
 if(length(sub.i)>0) {  
     img<-GetPageImage(subjects,sub.i)
 } else {
