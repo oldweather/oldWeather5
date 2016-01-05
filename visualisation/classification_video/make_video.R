@@ -33,7 +33,7 @@ page.height<-1080
 bg.colour<-rgb(243/255,236/255,226/255,1)
 
 begin<-ymd_hms('2015-12-03 16:26:32')
-end<-ymd_hms('2015-12-03 16:36:32')
+end<-ymd_hms('2015-12-03 17:46:32')
 step<-seconds(1)
 current<-begin
 current.layout<-NULL
