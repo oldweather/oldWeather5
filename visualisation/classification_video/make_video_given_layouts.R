@@ -6,6 +6,7 @@ library(parallel)
 classifications<-ReadClassifications('../../data-exports/classifications.csv')
 subjects<-ReadSubjects('../../data-exports/subjects.csv')
 classifications<-InterpolateTimestamps(classifications)
+classifications<-SetIsTranscription(classifications)
 
 page.width<-1080*4/3
 page.height<-1080

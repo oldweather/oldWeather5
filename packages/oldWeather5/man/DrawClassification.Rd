@@ -2,7 +2,7 @@
 % Please edit documentation in R/render.R
 \name{DrawClassification}
 \alias{DrawClassification}
-\title{Draw a single classification}
+\title{Draw a single annotation}
 \usage{
 DrawClassification(classifications, subjects, n, pg.width, pg.height,
   before = NULL)

@@ -110,11 +110,11 @@ FindTypes<-function(classifications) {
 #' @export
 #' @param classifications list from \code{\link{ReadClassifications}}.
 #' @return modified list with added $meta$is_transcription and t components.
-IsTranscription<-function(classifications) {
+SetIsTranscription<-function(classifications) {
     classifications$meta$is_transcription<-rep(FALSE,length(classifications$meta$started_at))
     for(i in seq_along(classifications$annotations)) {
         for(n in seq_along(classifications$annotations[[i]])) {
-            if(!is.null(classifications$annotations[[i]][[n]]$contents)
+            if(!is.null(classifications$annotations[[i]][[n]]$content)) {
                classifications$meta$is_transcription[i]<-TRUE
                break
             }

@@ -7,7 +7,7 @@
 GetClassificationsByDate(classifications, start_date, end_date, strict = TRUE)
 }
 \arguments{
-\item{classifications}{list from \code{\link{readClassifications}}.}
+\item{classifications}{list from \code{\link{ReadClassifications}}.}
 
 \item{start_date}{POSIXt date for selection period start}
 

@@ -7,7 +7,7 @@
 FixStartAndFinish(classifications)
 }
 \arguments{
-\item{classifications}{list from \code{\link{readClassifications}}.}
+\item{classifications}{list from \code{\link{ReadClassifications}}.}
 }
 \value{
 modified list with added $meta$new_started_at and $meta$new_finished_at components.

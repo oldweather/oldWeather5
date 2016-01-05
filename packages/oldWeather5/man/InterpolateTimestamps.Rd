@@ -7,7 +7,7 @@
 InterpolateTimestamps(classifications)
 }
 \arguments{
-\item{classifications}{list from \code{\link{readClassifications}}.}
+\item{classifications}{list from \code{\link{ReadClassifications}}.}
 }
 \value{
 modified list with timestamps for all annotations.

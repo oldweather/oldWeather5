@@ -149,7 +149,7 @@ UpdateLayout<-function(old.layout,x,y,cls,aspect=1.5,border=0.05) {
  }
 
 
-#' Draw a single classification
+#' Draw a single annotation
 #'
 #' Call from inside a viewport of the size given in the call
 #'
@@ -246,6 +246,109 @@ img.scale<-1/max(img.width/pg.width,img.height/pg.height)
    popViewport()
 
 }
+#' Draw a single transcription
+#'
+#' Call from inside a viewport of the size given in the call
+#'
+#' @export
+#' @param classifications - list of classifications from
+#'       \code{\link{ReadClassifications}}
+#' @param subjects - list of subjects from
+#'       \code{\link{ReadSubjects}}
+#' @param w index of classification to be drawn
+#' @param pg.width - viewport width in pixels
+#' @param pg.height - viewport height in pixels
+#' @param before - POSIXt date-time, draw the transcription soonest
+#'                 after this time in detail.
+DrawTranscription<-function(classifications, subjects, n,
+                             pg.width, pg.height,before=NULL) {
+
+sub.i<-which(subjects$core$subject_id==classifications$subject$number[n] |
+             subjects$meta$image==classifications$subject$image[n])
+if(length(sub.i)>0) {  
+    img<-GetPageImage(subjects,sub.i)
+} else {
+    img<-MissingPageImage()
+}
+
+img.height<-dim(img)[1]
+img.width<-dim(img)[2]
+
+img.scale<-1/max(img.width/pg.width,img.height/pg.height)
+
+  # Set up a viewport giving only the image, centred on the page
+   pushViewport(viewport(width=unit(img.width*img.scale,'native'),
+                         xscale=c(0,img.width),
+                         height=unit(img.height*img.scale,'native'),
+                         yscale=c(0,img.height),
+                         x=unit((pg.width-img.width*img.scale)/2,'native'),
+                         y=unit((pg.height-img.height*img.scale)/2,'native'),
+                         just=c("left","bottom"),name="vp_page"))
+
+  # Draw the background image
+   grid.raster(img)
+
+  # Draw all the boxes in pale grey
+   cls<-classifications$annotations[[n]]
+   last.timestamp<-NULL
+   for(i in seq_along(cls)) {
+       gp<-gpar(col=rgb(0,0,0,0),fill=rgb(0,0,0,0.2)) 
+     if(!is.null(cls[[i]]$x)) {
+       b<-cls[[i]]
+       grid.polygon(x=unit(c(b$x,b$x+b$width,b$x+b$width,b$x)*1.18,'native'),
+                    y=unit(img.height-c(b$y,b$y,b$y+b$height,b$y+b$height)*1.18,'native'),
+                    gp=gp)
+    }
+   }
+  # Pick the clasification closest after the specified time
+  if(!is.null(before)) {
+   for(i in seq_along(cls)) {
+       if(!is.null(cls[[i]]$timestamp) && cls[[i]]$timestamp/1000>before) {
+         # Darken this classification
+         gp<-gpar(col=rgb(0,0,0,0),fill=rgb(0,0,0,0.5)) 
+         if(!is.null(cls[[i]]$x) && !is.null(cls[[i]]$content) && nchar(cls[[i]]$content)>0) {
+           b<-cls[[i]]
+           grid.polygon(x=unit(c(b$x,b$x+b$width,b$x+b$width,b$x)*1.18,'native'),
+                        y=unit(img.height-c(b$y,b$y,b$y+b$height,b$y+b$height)*1.18,'native'),
+                        gp=gp)
+           txt<-paste(strwrap(b$content,width=25),collapse='\n') # wrap at 25 characters
+           if(nchar(txt)>100) txt<-substr(txt,1,100)
+           # Pick a pointsize based on current viewport dimensions
+           pointsize<-as.integer(convertX(unit(0.90,'npc'),'points',valueOnly=TRUE)/25)
+           pointsize<-min(96,max(pointsize,2))
+           txt.gp<-grid::gpar(family='Helvetica',font=1,col='black',fontsize=pointsize)
+           tg<-grid::textGrob(txt,x=unit(0.5,'npc'),
+                              y=unit(img.height-(b$y-b$height-2)*1.18,'native'),
+                              just=c('center','top'),
+                              gp=txt.gp)
+           yp<-grid::unit(img.height-(b$y-b$height-2)*1.18,'native')
+           if(b$y*1.18>img.height/2) {
+              tg<-grid::textGrob(txt,x=unit(0.5,'npc'),
+                             y=unit(img.height-(b$y+2)*1.18,'native'),
+                             just=c('center','bottom'),
+                             gp=txt.gp)
+              yp<-grid::unit(img.height-(b$y+2)*1.18,'native')
+            }
+            h<-heightDetails(tg)
+            w<-widthDetails(tg)
+            xp<-grid::unit(0.5,'npc')
+            bdr<-grid::unit(0.2,'char') # border
+            y2<-yp-h-bdr
+            if(b$y*1.18>img.height/2) y2<-yp+h+bdr
+            bg.gp<-gpar(col<-rgb(0,0,0,0),fill=rgb(1,1,1,0.5))
+            grid::grid.polygon(x=unit(c(0.05,0.95,0.95,0.05),'npc'),
+                               y=unit.c(y2,y2,yp-bdr,yp-bdr),
+                               gp=bg.gp)
+            grid::grid.draw(tg)
+         }
+       break
+       }
+     }
+ }
+       
+   popViewport()
+
+}
 
 #' Draw a Layout
 #'
@@ -272,9 +375,15 @@ DrawLayout<-function(classifications, subjects, layout,before=NULL) {
                              y=unit(layout$viewports[[i]][2],'native'),
                              just=c("left","bottom")))
 
-        DrawClassification(classifications, subjects, layout$contents[i],
+        if(classifications$meta$is_transcription[layout$contents[i]]) {
+           DrawTranscription(classifications, subjects, layout$contents[i],
+                              layout$viewports[[i]][3],
+                              layout$viewports[[i]][4],before=before)
+        } else {  
+           DrawClassification(classifications, subjects, layout$contents[i],
                            layout$viewports[[i]][3],
                            layout$viewports[[i]][4],before=before)
+         }
         popViewport()
     }
 }

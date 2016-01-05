@@ -7,7 +7,7 @@
 GetPageImage(subjects, i)
 }
 \arguments{
-\item{subjects}{list from \code{\link{readSubjects}}.}
+\item{subjects}{list from \code{\link{ReadSubjects}}.}
 
 \item{i}{index of the selected subject}
 }

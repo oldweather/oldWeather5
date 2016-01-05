@@ -7,7 +7,7 @@
 FindTypes(classifications)
 }
 \arguments{
-\item{classifications}{list from \code{\link{readClassifications}}.}
+\item{classifications}{list from \code{\link{ReadClassifications}}.}
 }
 \value{
 names for each classification type.
