@@ -15,7 +15,7 @@ DrawLabel<-function(label) {
                       y=unit(0.01,'npc'),
                       just=c('right','bottom'),
                       gp=label.gp)
-   bg.gp<-grid::gpar(col=par('bg'),fill=par('bg'))
+   bg.gp<-grid::gpar(col=rgb(1,1,1,0.0),fill=rgb(1,1,1,0.5))
    h<-heightDetails(tg)
    w<-widthDetails(tg)
    xp<-grid::unit(0.99,'npc')
@@ -47,7 +47,7 @@ DrawLabel<-function(label) {
 #'   showing which classification is in each viewport;
 #'   viewports - list length nx*ny giving x,y, width and height
 #'   for each page viewport.
-Layout<-function(x,y,n,aspect=1.5,border=0.05) {
+Layout<-function(x,y,n,aspect=1.33,border=0.05) {
   if(n==0) n<-1        
   layout<-c(n,1)
   scale<-min(x/layout[1],y/layout[2]*aspect)
@@ -121,9 +121,14 @@ InterpolateLayout<-function(old.layout,new.layout,fraction) {
 #'   showing which classification is in each viewport;
 #'   viewports - list length nx*ny giving x,y, width and height
 #'   for each page viewport.
-UpdateLayout<-function(old.layout,x,y,cls,aspect=1.5,border=0.05) {
+UpdateLayout<-function(old.layout,x,y,cls,aspect=1.33,border=0.05) {
     
-    new.layout<-Layout(x,y,length(cls),aspect,border)
+  new.length<-length(cls)
+  if(new.length<length(old.layout$contents) &&
+     new.length>length(old.layout$contents)/2) {
+    new.length<-length(old.layout$contents)
+  }
+  new.layout<-Layout(x,y,new.length,aspect,border)
     # Simple case - same size
     if(!is.null(old.layout) &&
        old.layout$nx==new.layout$nx &&
@@ -332,10 +337,10 @@ img.scale<-1/max(img.width/pg.width,img.height/pg.height)
             h<-heightDetails(tg)
             w<-widthDetails(tg)
             xp<-grid::unit(0.5,'npc')
-            bdr<-grid::unit(0.2,'char') # border
+            bdr<-grid::unit(0.02,'npc') # border
             y2<-yp-h-bdr
             if(b$y*1.18>img.height/2) y2<-yp+h+bdr
-            bg.gp<-gpar(col<-rgb(0,0,0,0),fill=rgb(1,1,1,0.5))
+            bg.gp<-gpar(col<-rgb(0,0,0,0),fill=rgb(1,1,1,0.5),fontsize=pointsize)
             grid::grid.polygon(x=unit(c(0.05,0.95,0.95,0.05),'npc'),
                                y=unit.c(y2,y2,yp-bdr,yp-bdr),
                                gp=bg.gp)

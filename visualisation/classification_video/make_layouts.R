@@ -11,8 +11,8 @@ layouts<-list()
 page.width<-1080*4/3
 page.height<-1080
 
-begin<-ymd_hms('2015-12-03 16:59:59')
-end<-ymd_hms('2015-12-03 17:25:00')
+begin<-ymd_hms('2015-12-03 16:25:59')
+end<-ymd_hms('2015-12-03 20:25:00')
 step<-seconds(1)
 current<-begin
 current.layout<-NULL

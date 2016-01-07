@@ -17,6 +17,8 @@ SwitchLayout<-function(old.layout,new.layout,current,steps) {
                 minute(current),second(current),i)
     png(filename=fn,width=page.width,height=page.height,bg=bg.colour,pointsize=24)
      pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
+    grid.raster(background.img,width=unit(page.width,'native'),
+                               height=unit(page.height,'native'))
      i.layout<-InterpolateLayout(old.layout,new.layout,plogis((i-0.5)/steps,
                                                 location = 0.5, scale = 0.1, log = FALSE))
     DrawLayout(classifications,subjects,i.layout,before=current)
@@ -52,6 +54,8 @@ while(current<end) {
     
     png(filename=fn,width=page.width,height=page.height,bg=bg.colour,pointsize=24)
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
+    grid.raster(background.img,width=unit(page.width,'native'),
+                               height=unit(page.height,'native'))
     DrawLayout(classifications,subjects,current.layout,before=current)
     popViewport()
     DrawLabel(as.character(current))
