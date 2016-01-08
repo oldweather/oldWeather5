@@ -74,9 +74,10 @@ for(i in w) {
         s.start<-s.start+jitter(0.1,amount=0.02)*sound.track@samp.rate
       }
     } else {  # Annotation
+        if(!is.null(ann$type) && ann$type=='cell') next # auto-generated boxes
         y<-1000
         if(!is.null(ann$y)) y<-ann$y
-        pitch.class<-as.integer(27*y/2300)+1
+        pitch.class<-as.integer(27*(2300-y)/2300)+1
         pitch.class<-min(pitch.class,27)
         sample<-celesta[[pitch.class]]
         if(!is.null(ann$type)&& (ann$type=='date' ||
