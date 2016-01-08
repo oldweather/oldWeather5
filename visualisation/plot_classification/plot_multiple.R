@@ -19,7 +19,7 @@ png(filename='tst_multiple.png',width=page.width,height=page.height,
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     grid.raster(background.img,width=unit(page.width,'native'),
                                height=unit(page.height,'native'))
-    DrawLayout(classifications,subjects,l1,before=NULL)
+    DrawLayout(l1,before=NULL)
     popViewport()
     DrawLabel(paste(c.set,collapse=' '))
     dev.off()

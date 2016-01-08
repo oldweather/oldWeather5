@@ -3,15 +3,18 @@
 library(oldWeather5)
 library(parallel)
 
-classifications<-ReadClassifications('../../data-exports/classifications.csv')
+begin<-ymd_hms('2015-12-03 16:59:59')
+end<-ymd_hms('2015-12-03 20:59:41')
+
+classifications<-ReadClassifications('../../data-exports/classifications.csv'
+                                     start_date=begin-seconds(500),
+                                     end_date=end+seconds(500))
 subjects<-ReadSubjects('../../data-exports/subjects.csv')
 classifications<-InterpolateTimestamps(classifications)
 classifications<-SetIsTranscription(classifications)
 
 page.width<-1080*4/3
 page.height<-1080
-begin<-ymd_hms('2015-12-03 16:59:59')
-end<-ymd_hms('2015-12-03 20:59:41')
 step<-seconds(1)
 load('layouts.Rdata') # pre-calculated layouts
 
@@ -30,7 +33,7 @@ SwitchLayout<-function(old.layout,new.layout,current,steps) {
                                height=unit(page.height,'native'))
      i.layout<-InterpolateLayout(old.layout,new.layout,plogis((i-0.5)/steps,
                                                 location = 0.5, scale = 0.1, log = FALSE))
-    DrawLayout(classifications,subjects,i.layout,before=current)
+    DrawLayout(i.layout,before=current)
     popViewport()
     DrawLabel(as.character(current))
     dev.off()
@@ -53,7 +56,7 @@ plot_current<-function(current) {
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     grid.raster(background.img,width=unit(page.width,'native'),
                                height=unit(page.height,'native'))
-    DrawLayout(classifications,subjects,new.layout,before=current)
+    DrawLayout(new.layout,before=current)
     popViewport()
     DrawLabel(as.character(current))
     dev.off()

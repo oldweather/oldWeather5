@@ -4,15 +4,9 @@
 \alias{DrawLayout}
 \title{Draw a Layout}
 \usage{
-DrawLayout(classifications, subjects, layout, before = NULL)
+DrawLayout(layout, before = NULL)
 }
 \arguments{
-\item{classifications}{- list of classifications from
-\code{\link{ReadClassifications}}}
-
-\item{subjects}{- list of subjects from
-\code{\link{ReadSubjects}}}
-
 \item{layout}{layout to be drawn \code{\link{Layout}}}
 
 \item{before}{- POSIXt date-time, if not NULL (default), draw

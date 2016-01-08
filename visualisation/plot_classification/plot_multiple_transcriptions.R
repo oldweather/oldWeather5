@@ -20,7 +20,7 @@ png(filename='transcriptions_multiple.png',width=page.width,height=page.height,
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     grid.raster(background.img,width=unit(page.width,'native'),
                                height=unit(page.height,'native'))
-    DrawLayout(classifications,subjects,l1,before=before)
+    DrawLayout(l1,before=before)
     popViewport()
     DrawLabel(paste(c.set,collapse=' '))
     dev.off()

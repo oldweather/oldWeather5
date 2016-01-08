@@ -4,11 +4,9 @@
 \alias{GetClassificationsByDate}
 \title{Get classifications by date}
 \usage{
-GetClassificationsByDate(classifications, start_date, end_date, strict = TRUE)
+GetClassificationsByDate(start_date, end_date, strict = TRUE)
 }
 \arguments{
-\item{classifications}{list from \code{\link{ReadClassifications}}.}
-
 \item{start_date}{POSIXt date for selection period start}
 
 \item{end_date}{POSIXt date for selection period end}

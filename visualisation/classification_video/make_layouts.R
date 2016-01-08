@@ -21,7 +21,7 @@ while(current<end) {
                 Sys.getenv('SCRATCH'),
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current))
-    w<-GetClassificationsByDate(classifications,current-seconds(60),current+seconds(60))
+    w<-GetClassificationsByDate(current-seconds(60),current+seconds(60))
     new.layout<-UpdateLayout(current.layout,page.width,page.height,w)
     layouts[[as.character(current)]]<-new.layout
     current.layout<-new.layout

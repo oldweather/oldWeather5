@@ -4,11 +4,24 @@
 #'
 #' @export
 #' @param file file to read data from.
+#' @param start_date POSIXt date. If not NULL (default), discard classifications
+#'     created before this date.
+#' @param end_date POSIXt date. If not NULL (default), discard classifications
+#'     created after this date.
 #' @return list of data frames - separate for core, metadata, and subjects.
-ReadClassifications<-function(file) {
+ReadClassifications<-function(file,start_date=NULL,end_date=NULL) {
     l<-read.csv(file=file,as.is=TRUE)
     # string dates to POSIXt
     l$created_at <- lubridate::ymd_hms(l$created_at)
+    # Filter by date
+    if(!is.null(start_date)) {
+      w<-which(l$created_at>=start_date)
+      l<-l[w,]
+    }
+    if(!is.null(end_date)) {
+      w<-which(l$created_at<=end_date)
+      l<-l[w,]
+    }
     # unpack the metadata into a separate frame
     meta<-UnpackCMeta(l$metadata)
     # same with subjects

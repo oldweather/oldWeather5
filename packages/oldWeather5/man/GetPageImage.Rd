@@ -4,11 +4,9 @@
 \alias{GetPageImage}
 \title{Get a raster image of a selected page}
 \usage{
-GetPageImage(subjects, i)
+GetPageImage(i)
 }
 \arguments{
-\item{subjects}{list from \code{\link{ReadSubjects}}.}
-
 \item{i}{index of the selected subject}
 }
 \value{

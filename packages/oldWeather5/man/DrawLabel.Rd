@@ -2,7 +2,7 @@
 % Please edit documentation in R/render.R
 \name{DrawLabel}
 \alias{DrawLabel}
-\title{Add a label to the presnet viewport.}
+\title{Add a label to the present viewport.}
 \usage{
 DrawLabel(label)
 }

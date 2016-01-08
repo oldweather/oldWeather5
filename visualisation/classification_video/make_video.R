@@ -15,7 +15,7 @@ SwitchLayout<-function(old.layout,new.layout,current,steps) {
                 Sys.getenv('SCRATCH'),
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current),i)
-    png(filename=fn,width=page.width,height=page.height,bg=bg.colour,pointsize=24)
+    png(filename=fn,width=page.width,height=page.height,pointsize=24)
      pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     grid.raster(background.img,width=unit(page.width,'native'),
                                height=unit(page.height,'native'))
@@ -29,14 +29,19 @@ SwitchLayout<-function(old.layout,new.layout,current,steps) {
    
 }
     
+# Dodge bizarre on-the-hour bug
+increment.step<-function(current) {
+  if(second(current)==59) current<-current+step*2-step
+  else current<-current+step
+  return(current)
+}
 
 # First test video
 page.width<-1080*4/3
 page.height<-1080
-bg.colour<-rgb(243/255,236/255,226/255,1)
 
 begin<-ymd_hms('2015-12-03 16:26:32')
-end<-ymd_hms('2015-12-03 17:46:32')
+end<-ymd_hms('2015-12-03 20:25:32')
 step<-seconds(1)
 current<-begin
 current.layout<-NULL
@@ -52,7 +57,7 @@ while(current<end) {
     }
     current.layout<-new.layout
     
-    png(filename=fn,width=page.width,height=page.height,bg=bg.colour,pointsize=24)
+    png(filename=fn,width=page.width,height=page.height,pointsize=24)
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     grid.raster(background.img,width=unit(page.width,'native'),
                                height=unit(page.height,'native'))
@@ -61,6 +66,6 @@ while(current<end) {
     DrawLabel(as.character(current))
     dev.off()
                 
-    current<-current+step*2-step
+    current<-increment.step(current)
 }
                 

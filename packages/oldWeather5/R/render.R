@@ -1,7 +1,7 @@
 # Functions to render one or more classifications
 #  For various markup videos and debugging.
 
-#' Add a label to the presnet viewport.
+#' Add a label to the present viewport.
 #'
 #' Often the date-time, but can be anything.
 #'
@@ -159,30 +159,25 @@ UpdateLayout<-function(old.layout,x,y,cls,aspect=1.33,border=0.05) {
 #' Call from inside a viewport of the size given in the call
 #'
 #' @export
-#' @param classifications - list of classifications from
-#'       \code{\link{ReadClassifications}}
-#' @param subjects - list of subjects from
-#'       \code{\link{ReadSubjects}}
 #' @param w index of classification to be drawn
 #' @param pg.width - viewport width in pixels
 #' @param pg.height - viewport height in pixels
 #' @param before - POSIXt date-time, if not NULL (default), draw
 #'     only annotations from this time or earlier.
-DrawClassification<-function(classifications, subjects, n,
-                             pg.width, pg.height,before=NULL) {
+DrawClassification<-function(n, pg.width, pg.height,before=NULL) {
 
-sub.i<-which(subjects$core$subject_id==classifications$subject$number[n] |
-             subjects$meta$image==classifications$subject$image[n])
-if(length(sub.i)>0) {  
-    img<-GetPageImage(subjects,sub.i)
-} else {
-    img<-MissingPageImage()
-}
+    sub.i<-which(subjects$core$subject_id==classifications$subject$number[n] |
+                 subjects$meta$image==classifications$subject$image[n])
+    if(length(sub.i)>0) {  
+        img<-GetPageImage(sub.i)
+    } else {
+        img<-MissingPageImage()
+    }
 
-img.height<-dim(img)[1]
-img.width<-dim(img)[2]
+    img.height<-dim(img)[1]
+    img.width<-dim(img)[2]
 
-img.scale<-1/max(img.width/pg.width,img.height/pg.height)
+    img.scale<-1/max(img.width/pg.width,img.height/pg.height)
 
   # Set up a viewport giving only the image, centred on the page
    pushViewport(viewport(width=unit(img.width*img.scale,'native'),
@@ -256,30 +251,25 @@ img.scale<-1/max(img.width/pg.width,img.height/pg.height)
 #' Call from inside a viewport of the size given in the call
 #'
 #' @export
-#' @param classifications - list of classifications from
-#'       \code{\link{ReadClassifications}}
-#' @param subjects - list of subjects from
-#'       \code{\link{ReadSubjects}}
 #' @param w index of classification to be drawn
 #' @param pg.width - viewport width in pixels
 #' @param pg.height - viewport height in pixels
 #' @param before - POSIXt date-time, draw the transcription soonest
 #'                 after this time in detail.
-DrawTranscription<-function(classifications, subjects, n,
-                             pg.width, pg.height,before=NULL) {
+DrawTranscription<-function(n, pg.width, pg.height,before=NULL) {
 
-sub.i<-which(subjects$core$subject_id==classifications$subject$number[n] |
-             subjects$meta$image==classifications$subject$image[n])
-if(length(sub.i)>0) {  
-    img<-GetPageImage(subjects,sub.i)
-} else {
-    img<-MissingPageImage()
-}
+    sub.i<-which(subjects$core$subject_id==classifications$subject$number[n] |
+                 subjects$meta$image==classifications$subject$image[n])
+    if(length(sub.i)>0) {  
+        img<-GetPageImage(sub.i)
+    } else {
+        img<-MissingPageImage()
+    }
 
-img.height<-dim(img)[1]
-img.width<-dim(img)[2]
+    img.height<-dim(img)[1]
+    img.width<-dim(img)[2]
 
-img.scale<-1/max(img.width/pg.width,img.height/pg.height)
+    img.scale<-1/max(img.width/pg.width,img.height/pg.height)
 
   # Set up a viewport giving only the image, centred on the page
    pushViewport(viewport(width=unit(img.width*img.scale,'native'),
@@ -360,16 +350,12 @@ img.scale<-1/max(img.width/pg.width,img.height/pg.height)
 #' Call from inside a viewport of the size given in the call
 #'
 #' @export
-#' @param classifications - list of classifications from
-#'       \code{\link{ReadClassifications}}
-#' @param subjects - list of subjects from
-#'       \code{\link{ReadSubjects}}
 #' @param layout layout to be drawn \code{\link{Layout}}
 #' @param pg.width - viewport width in pixels
 #' @param pg.height - viewport height in pixels
 #' @param before - POSIXt date-time, if not NULL (default), draw
 #'     only annotations from this time or earlier.
-DrawLayout<-function(classifications, subjects, layout,before=NULL) {
+DrawLayout<-function(layout,before=NULL) {
     for(i in seq_along(layout$contents)) {
         if(is.na(layout$contents[i])) next
         pushViewport(viewport(width=unit(layout$viewports[[i]][3],'native'),
@@ -381,11 +367,11 @@ DrawLayout<-function(classifications, subjects, layout,before=NULL) {
                              just=c("left","bottom")))
 
         if(classifications$meta$is_transcription[layout$contents[i]]) {
-           DrawTranscription(classifications, subjects, layout$contents[i],
+           DrawTranscription(layout$contents[i],
                               layout$viewports[[i]][3],
                               layout$viewports[[i]][4],before=before)
         } else {  
-           DrawClassification(classifications, subjects, layout$contents[i],
+           DrawClassification(layout$contents[i],
                            layout$viewports[[i]][3],
                            layout$viewports[[i]][4],before=before)
          }

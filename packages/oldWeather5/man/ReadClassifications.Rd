@@ -4,10 +4,16 @@
 \alias{ReadClassifications}
 \title{Read in the oW5 classifications table}
 \usage{
-ReadClassifications(file)
+ReadClassifications(file, start_date = NULL, end_date = NULL)
 }
 \arguments{
 \item{file}{file to read data from.}
+
+\item{start_date}{POSIXt date. If not NULL (default), discard classifications
+created before this date.}
+
+\item{end_date}{POSIXt date. If not NULL (default), discard classifications
+created after this date.}
 }
 \value{
 list of data frames - separate for core, metadata, and subjects.

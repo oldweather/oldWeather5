@@ -130,12 +130,11 @@ SetIsTranscription<-function(classifications) {
 #' Optionally check that an annotation occurred between the two dates (slow).
 #'
 #' @export
-#' @param classifications list from \code{\link{ReadClassifications}}.
 #' @param start_date POSIXt date for selection period start
 #' @param end_date POSIXt date for selection period end
 #' @param strict Boolean, if TRUE (default) check an annotation occured in the range. 
 #' @return vector of indices of classifications in the selected date range.
-GetClassificationsByDate<-function(classifications,start_date,end_date,strict=TRUE) {
+GetClassificationsByDate<-function(start_date,end_date,strict=TRUE) {
     w<-which(classifications$meta$started_at<=end_date &
              classifications$meta$finished_at>start_date)
     if(strict) {
@@ -162,20 +161,20 @@ GetClassificationsByDate<-function(classifications,start_date,end_date,strict=TR
 #' Download the image from the website (unless it's already cached).
 #'
 #' @export
-#' @param subjects list from \code{\link{ReadSubjects}}.
 #' @param i index of the selected subject
 #' @return raster of the image.
-GetPageImage<-function(subjects,i) {
+GetPageImage<-function(i) {
   if(Sys.getenv('SCRATCH')=="") stop("Unspecified SCRATCH directory")
   cache.dir<-sprintf("%s/oW5.cache/",Sys.getenv('SCRATCH'))
   if(!file.exists(cache.dir)) dir.create(cache.dir,recursive=TRUE)
   local.name<-as.character(subjects$core$subject_id[i])
-  url<-subjects$locations[[i]][['0']]
   local.filename<-sprintf("%s/%s",cache.dir,local.name)
   if(file.exists(local.filename) && file.info(local.filename)$size>0) {
     img<-readJPEG(local.filename,native=FALSE)
     return(img)
   }
+  if(is.null(subjects$locations[[i]])) return(MissingPageImage())
+  url<-subjects$locations[[i]][['0']]
   res<-download.file(url,local.filename,method='wget',quiet=TRUE)
   if(res!=0) stop(sprintf("Failed download of %s to $s",url,local.filename))
   img<-readJPEG(local.filename,native=FALSE)
