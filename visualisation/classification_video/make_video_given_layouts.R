@@ -3,10 +3,11 @@
 library(oldWeather5)
 library(parallel)
 
-begin<-ymd_hms('2015-12-03 16:59:59')
+#begin<-ymd_hms('2015-12-03 16:59:59')
+begin<-ymd_hms('2015-12-03 17:25:59')
 end<-ymd_hms('2015-12-03 20:59:41')
 
-classifications<-ReadClassifications('../../data-exports/classifications.csv'
+classifications<-ReadClassifications('../../data-exports/classifications.csv',
                                      start_date=begin-seconds(500),
                                      end_date=end+seconds(500))
 subjects<-ReadSubjects('../../data-exports/subjects.csv')
@@ -46,12 +47,12 @@ plot_current<-function(current) {
                 Sys.getenv('SCRATCH'),
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current))
+    if(file.exists(fn) && file.info(fn)$size>0) return()
     current.layout<-layouts[[as.character(current-step)]]
     new.layout<-layouts[[as.character(current)]]
     if(!is.null(current.layout) && length(new.layout$contents)!=length(current.layout$contents)) {
         SwitchLayout(current.layout,new.layout,current-step,18)
     }
-    if(file.exists(fn) && file.info(fn)$size>0) return()
     png(filename=fn,width=page.width,height=page.height,pointsize=24)
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     grid.raster(background.img,width=unit(page.width,'native'),
@@ -78,11 +79,24 @@ while(current<end) {
 
     steps[[idx]]<-current
     current<-increment.step(current)
+      fn<-sprintf("%s/images/oW5.working/%04d%02d%02d%02d%02d%02d_00.png",
+                Sys.getenv('SCRATCH'),
+                year(current),month(current),day(current),hour(current),
+                minute(current),second(current))
+    if(file.exists(fn) && file.info(fn)$size>0) next
+    if(is.null(layouts[[as.character(current)]])) {
+        w<-GetClassificationsByDate(current-seconds(60),current+seconds(60))
+        layouts[[as.character(current)]] <- UpdateLayout(layouts[[as.character(current-step)]],
+                                                         page.width,page.height,w)
+      }
     idx<-idx+1
     if(idx>=60) {
-      mclapply(steps,plot_current,mc.cores=6)
+      gc(verbose=FALSE)
+      mclapply(steps,plot_current,mc.cores=3,mc.preschedule=FALSE)
+      #lapply(steps,plot_current)
       steps<-list()
       idx<-1
+      gc(verbose=FALSE)
     }
 }
 mclapply(steps,plot_current,mc.cores=6)
