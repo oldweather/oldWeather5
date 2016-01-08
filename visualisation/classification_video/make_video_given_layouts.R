@@ -4,7 +4,7 @@ library(oldWeather5)
 library(parallel)
 
 #begin<-ymd_hms('2015-12-03 16:59:59')
-begin<-ymd_hms('2015-12-03 17:25:59')
+begin<-ymd_hms('2015-12-03 16:25:59')
 end<-ymd_hms('2015-12-03 20:59:41')
 
 classifications<-ReadClassifications('../../data-exports/classifications.csv',
@@ -53,6 +53,7 @@ plot_current<-function(current) {
     if(!is.null(current.layout) && length(new.layout$contents)!=length(current.layout$contents)) {
         SwitchLayout(current.layout,new.layout,current-step,18)
     }
+    print(fn)
     png(filename=fn,width=page.width,height=page.height,pointsize=24)
     pushViewport(viewport(xscale=c(0,page.width),yscale=c(0,page.height)))
     grid.raster(background.img,width=unit(page.width,'native'),
@@ -83,17 +84,17 @@ while(current<end) {
                 Sys.getenv('SCRATCH'),
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current))
-    if(file.exists(fn) && file.info(fn)$size>0) next
     if(is.null(layouts[[as.character(current)]])) {
         w<-GetClassificationsByDate(current-seconds(60),current+seconds(60))
         layouts[[as.character(current)]] <- UpdateLayout(layouts[[as.character(current-step)]],
                                                          page.width,page.height,w)
       }
+    if(file.exists(fn) && file.info(fn)$size>0) next
     idx<-idx+1
     if(idx>=60) {
       gc(verbose=FALSE)
-      mclapply(steps,plot_current,mc.cores=3,mc.preschedule=FALSE)
-      #lapply(steps,plot_current)
+      #mclapply(steps,plot_current,mc.cores=3,mc.preschedule=FALSE)
+      lapply(steps,plot_current)
       steps<-list()
       idx<-1
       gc(verbose=FALSE)

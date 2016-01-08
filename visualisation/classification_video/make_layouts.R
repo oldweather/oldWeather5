@@ -6,6 +6,13 @@ classifications<-ReadClassifications('../../data-exports/classifications.csv')
 subjects<-ReadSubjects('../../data-exports/subjects.csv')
 classifications<-InterpolateTimestamps(classifications)
 
+# Dodge bizarre on-the-hour bug
+increment.step<-function(current) {
+  if(second(current)==59) current<-current+step*2-step
+  else current<-current+step
+  return(current)
+}
+
 layouts<-list()
 
 page.width<-1080*4/3
@@ -26,7 +33,7 @@ while(current<end) {
     layouts[[as.character(current)]]<-new.layout
     current.layout<-new.layout
                     
-    current<-current+step*2-step # Defeats bizarre bug on hour wrap-round
+    current<-increment.step(current)
     print(current)
 }
                 

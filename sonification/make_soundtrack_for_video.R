@@ -27,12 +27,12 @@ keystroke<-downsample(keystroke,24000)
 
 # Get the length of the video, and the re-layouts, from the png files.
 files<-list.files(path=sprintf("%s/images/oW5.working/",Sys.getenv('SCRATCH')),
-                  pattern='2015120316.*\\.png')
+                  pattern='*\\.png')
 begin<-ymd_hms(substr(files[1],1,14))
 end<-ymd_hms(substr(files[length(files)],1,14))
 layout.files<-list.files(path=sprintf("%s/images/oW5.working/",
                              Sys.getenv('SCRATCH')),
-                             pattern='2015120316.*_01\\.png')
+                             pattern='*_01\\.png')
 layout.times<-ymd_hms(substr(layout.files,1,14))
 
 framerate<-24 # Frames/s
@@ -74,7 +74,7 @@ for(i in w) {
         s.start<-s.start+jitter(0.1,amount=0.02)*sound.track@samp.rate
       }
     } else {  # Annotation
-        if(!is.null(ann$type) && ann$type=='cell') next # auto-generated boxes
+        if(is.null(ann$type) || ann$type=='cell') next # auto-generated boxes
         y<-1000
         if(!is.null(ann$y)) y<-ann$y
         pitch.class<-as.integer(27*(2300-y)/2300)+1
@@ -91,6 +91,7 @@ for(i in w) {
         s.end<-s.start+length(sample@left)-1
         if(s.end>length(sound.track@left)) {
             space<-length(sound.track@left)-s.start-1
+            if(space<1) next
             sample@left<-sample@left[1:space]
             s.end<-s.start+length(sample@left)-1
           }
