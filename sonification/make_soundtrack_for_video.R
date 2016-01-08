@@ -50,7 +50,7 @@ classifications<-ReadClassifications('../data-exports/classifications.csv')
 classifications<-InterpolateTimestamps(classifications)
 classifications<-SetIsTranscription(classifications)
 
-w<-GetClassificationsByDate(classifications,begin,end)
+w<-GetClassificationsByDate(begin,end)
 begin.n<-as.numeric(begin)
 end.n<-as.numeric(end)
 for(i in w) {
