@@ -295,10 +295,12 @@ DrawTranscription<-function(n, pg.width, pg.height,before=NULL) {
                     gp=gp)
     }
    }
-  # Pick the clasification closest after the specified time
-  if(!is.null(before)) {
-   for(i in seq_along(cls)) {
-       if(!is.null(cls[[i]]$timestamp) && cls[[i]]$timestamp/1000>before) {
+  # Pick the clasification closest to the specified time
+    if(!is.null(before)) {
+        dif<-rep(NA,length(cls))
+        for(i in seq_along(cls)) dif[i]<-abs(cls[[i]]$timestamp/1000-as.numeric(before))
+        if(length(which(!is.na(dif)))>0) {
+         i<-which.min(dif)
          # Darken this classification
          gp<-gpar(col=rgb(0,0,0,0),fill=rgb(0,0,0,0.5)) 
          if(!is.null(cls[[i]]$x) && !is.null(cls[[i]]$content) && nchar(cls[[i]]$content)>0) {
@@ -335,12 +337,10 @@ DrawTranscription<-function(n, pg.width, pg.height,before=NULL) {
                                y=unit.c(y2,y2,yp-bdr,yp-bdr),
                                gp=bg.gp)
             grid::grid.draw(tg)
-         }
-       break
        }
      }
- }
-       
+    }
+                 
    popViewport()
 
 }

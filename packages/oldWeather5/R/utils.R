@@ -76,9 +76,11 @@ FixStartAndFinish<-function(classifications) {
             }
          }
      }
-     classifications$meta$new_started_at<-as.POSIXct(classifications$meta$new_started_at/1000,
+     classifications$meta$original_started_at<-classifications$meta$started_at
+     classifications$meta$started_at<-as.POSIXct(classifications$meta$new_started_at/1000,
                                  origin='1970-01-01:00:00:00')
-     classifications$meta$new_finished_at<-as.POSIXct(classifications$meta$new_finished_at/1000,
+     classifications$meta$original_finished_at<-classifications$meta$finished_at
+     classifications$meta$finished_at<-as.POSIXct(classifications$meta$new_finished_at/1000,
                                  origin='1970-01-01:00:00:00')
      return(classifications)
  }
