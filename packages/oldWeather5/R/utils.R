@@ -175,7 +175,7 @@ GetPageImage<-function(i) {
   }
   if(is.null(subjects$locations[[i]])) return(MissingPageImage())
   url<-subjects$locations[[i]][['0']]
-  res<-download.file(url,local.filename,method='wget',quiet=TRUE)
+  res<-download.file(url,local.filename,method='curl',quiet=TRUE)
   if(res!=0) stop(sprintf("Failed download of %s to $s",url,local.filename))
   img<-readJPEG(local.filename,native=FALSE)
   return(img)

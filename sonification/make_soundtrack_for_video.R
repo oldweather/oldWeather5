@@ -6,13 +6,13 @@ library(tuneR)
 # load some sounds - all sampled at 24,000 hz
 celesta<-list()
 for(i in 1:27) {
-  fn<-sprintf("sounds/ltw/celesta/c%03d.mp3",i)
-  celesta[[i]]<-readMP3(fn)
+  fn<-sprintf("sounds/ltw/celesta/c%03d.wav",i)
+  celesta[[i]]<-readWave(fn)
 }
 clav<-list()
 for(i in 1:27) {
-  fn<-sprintf("sounds/ltw/clav/c%03d.mp3",i)
-  clav[[i]]<-readMP3(fn)
+  fn<-sprintf("sounds/ltw/clav/c%03d.wav",i)
+  clav[[i]]<-readWave(fn)
 }
 beep<-readWave('sounds/beep-01a.wav')
 beep<-downsample(beep,24000)
@@ -28,6 +28,8 @@ keystroke<-downsample(keystroke,24000)
 # Get the length of the video, and the re-layouts, from the png files.
 files<-list.files(path=sprintf("%s/images/oW5.working/",Sys.getenv('SCRATCH')),
                   pattern='*\\.png')
+#w<-which(files<'20151203192600_00.png')
+#files<-files[w]
 begin<-ymd_hms(substr(files[1],1,14))
 end<-ymd_hms(substr(files[length(files)],1,14))
 layout.files<-list.files(path=sprintf("%s/images/oW5.working/",

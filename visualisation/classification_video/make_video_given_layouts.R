@@ -3,13 +3,11 @@
 library(oldWeather5)
 library(parallel)
 
-#begin<-ymd_hms('2015-12-03 16:59:59')
-begin<-ymd_hms('2015-12-03 16:25:59')
-end<-ymd_hms('2015-12-03 20:59:41')
+begin<-ymd_hms('2015-12-03 19:26:00')
+#begin<-ymd_hms('2015-12-03 16:26:00')
+end<-ymd_hms('2015-12-03 20:26:00')
 
-classifications<-ReadClassifications('../../data-exports/classifications.csv',
-                                     start_date=begin-seconds(500),
-                                     end_date=end+seconds(500))
+classifications<-ReadClassifications('../../data-exports/classifications.csv')
 subjects<-ReadSubjects('../../data-exports/subjects.csv')
 classifications<-InterpolateTimestamps(classifications)
 classifications<-SetIsTranscription(classifications)
@@ -84,21 +82,22 @@ while(current<end) {
                 Sys.getenv('SCRATCH'),
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current))
+    if(file.exists(fn) && file.info(fn)$size>0) next
     if(is.null(layouts[[as.character(current)]])) {
-        w<-GetClassificationsByDate(current-seconds(60),current+seconds(60))
+        q('no')
+        w<-GetClassificationsByDate(current-seconds(30),current+seconds(30))
         layouts[[as.character(current)]] <- UpdateLayout(layouts[[as.character(current-step)]],
                                                          page.width,page.height,w)
       }
-    if(file.exists(fn) && file.info(fn)$size>0) next
     idx<-idx+1
-    if(idx>=60) {
+    if(idx>=300) {
       gc(verbose=FALSE)
-      #mclapply(steps,plot_current,mc.cores=3,mc.preschedule=FALSE)
-      lapply(steps,plot_current)
+      mclapply(steps,plot_current,mc.cores=30,mc.preschedule=FALSE)
+      #lapply(steps,plot_current)
       steps<-list()
       idx<-1
       gc(verbose=FALSE)
     }
 }
-mclapply(steps,plot_current,mc.cores=6)
+mclapply(steps,plot_current,mc.cores=30)
 

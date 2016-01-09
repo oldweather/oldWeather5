@@ -28,13 +28,15 @@ while(current<end) {
                 Sys.getenv('SCRATCH'),
                 year(current),month(current),day(current),hour(current),
                 minute(current),second(current))
-    w<-GetClassificationsByDate(current-seconds(60),current+seconds(60))
+    w<-GetClassificationsByDate(current-seconds(30),current+seconds(30),
+                                strict=TRUE)
     new.layout<-UpdateLayout(current.layout,page.width,page.height,w)
     layouts[[as.character(current)]]<-new.layout
     current.layout<-new.layout
                     
     current<-increment.step(current)
     print(current)
+    if(second(current)==59 && minute(current)%%5==0) save(layouts,file='layouts.Rdata')
 }
                 
 save(layouts,file='layouts.Rdata')
