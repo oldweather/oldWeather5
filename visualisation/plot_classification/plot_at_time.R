@@ -2,14 +2,13 @@
 
 library(oldWeather5)
 
-p.time<-ymd_hms('2015-12-03:16:51:56')
 #p.time<-ymd_hms('2015-12-04:02:00:00')
-classifications<-ReadClassifications('../../data-exports/classifications.csv',
-                                     p.time-seconds(500),
-                                     p.time+seconds(500))
+p.time<-ymd_hms('2015-12-03:17:26:40')
+classifications<-ReadClassifications('../../data-exports/classifications.csv')
 subjects<-ReadSubjects('../../data-exports/subjects.csv')
 classifications<-InterpolateTimestamps(classifications)
 classifications<-SetIsTranscription(classifications)
+classifications<-FixStartAndFinish(classifications)
 
 c.set<-GetClassificationsByDate(p.time-seconds(30),p.time+seconds(30))
 
