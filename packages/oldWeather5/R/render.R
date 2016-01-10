@@ -311,30 +311,16 @@ DrawTranscription<-function(n, pg.width, pg.height,before=NULL) {
            txt<-paste(strwrap(b$content,width=25),collapse='\n') # wrap at 25 characters
            if(nchar(txt)>100) txt<-substr(txt,1,100)
            # Pick a pointsize based on current viewport dimensions
-           pointsize<-as.integer(convertX(unit(0.90,'npc'),'points',valueOnly=TRUE)/25)
-           pointsize<-min(96,max(pointsize,2))
+           pointsize<-as.integer(convertX(unit(0.90,'npc'),'points',valueOnly=TRUE)/12)
+           pointsize<-min(24,max(pointsize,2))
            txt.gp<-grid::gpar(family='Helvetica',font=1,col='black',fontsize=pointsize)
            tg<-grid::textGrob(txt,x=unit(0.5,'npc'),
-                              y=unit(img.height-(b$y-b$height-2)*1.18,'native'),
-                              just=c('center','top'),
+                              y=unit(0.25,'npc'),
+                              just=c('center','center'),
                               gp=txt.gp)
-           yp<-grid::unit(img.height-(b$y-b$height-2)*1.18,'native')
-           if(b$y*1.18>img.height/2) {
-              tg<-grid::textGrob(txt,x=unit(0.5,'npc'),
-                             y=unit(img.height-(b$y+2)*1.18,'native'),
-                             just=c('center','bottom'),
-                             gp=txt.gp)
-              yp<-grid::unit(img.height-(b$y+2)*1.18,'native')
-            }
-            h<-heightDetails(tg)
-            w<-widthDetails(tg)
-            xp<-grid::unit(0.5,'npc')
-            bdr<-grid::unit(0.02,'npc') # border
-            y2<-yp-h-bdr
-            if(b$y*1.18>img.height/2) y2<-yp+h+bdr
             bg.gp<-gpar(col<-rgb(0,0,0,0),fill=rgb(1,1,1,0.5),fontsize=pointsize)
             grid::grid.polygon(x=unit(c(0.05,0.95,0.95,0.05),'npc'),
-                               y=unit.c(y2,y2,yp-bdr,yp-bdr),
+                               y=unit(c(0.1,0.1,0.4,0.4),'npc'),
                                gp=bg.gp)
             grid::grid.draw(tg)
        }

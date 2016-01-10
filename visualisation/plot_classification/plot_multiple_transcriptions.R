@@ -10,7 +10,7 @@ classifications<-SetIsTranscription(classifications)
 page.width<-1080*4/3
 page.height<-1080
 
-c.set<-c(9,9,9,9,9)
+c.set<-rep(9,30)
 before<-classifications$annotations[[9]][[175]]$timestamp/1000-0.00001
 
 l1<-UpdateLayout(NULL,page.width,page.height,c.set)
