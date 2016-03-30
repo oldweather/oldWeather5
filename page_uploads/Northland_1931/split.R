@@ -1,8 +1,8 @@
 # Cut the Northland 1931 images into individual page files.
 
-photos<-Sys.glob('/Volumes/My Passport/Shipment to UK 2015-06-23/The Arctic Frontier/Coast Guard/Northland (WPG-49)/Northland-WPG-49-1931-split/*')
+photos<-Sys.glob('/data/local/hadpb/oW5.uploads/The_Arctic_Frontier/Coast_Guard/Northland_WPG-49/Northland-WPG-49-1931-split/raw_images/*')
 
-uploads.dir<-'/Users/philip/LocalData/ow5.uploads/Northland-WPG-49-1931/'
+uploads.dir<-'/data/local/hadpb/oW5.uploads/The_Arctic_Frontier/Coast_Guard/Northland_WPG-49/Northland-WPG-49-1931-split/for_upload'
 if(!file.exists(uploads.dir)) dir.create(uploads.dir,recursive=TRUE)
 
 p1.coords<-list(x=c(157,2541),y=c(103,3657))
