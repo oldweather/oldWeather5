@@ -1,4 +1,4 @@
-# Make the manifest CSV file for the Northwing 1931 images
+# Make the manifest CSV file for the Northland 1931 images
 
 log.files<-Sys.glob('/data/local/hadpb/oW5.uploads/The_Arctic_Frontier/Coast_Guard/Northland_WPG-49/Northland-WPG-49-1931-split/for_upload/*.jpg')
 
