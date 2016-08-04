@@ -47,12 +47,14 @@ UnpackCMeta<-function(meta) {
                user_language=character(len),
                utc_offset=character(len),
                seen_before=logical(len),
-               live_project=logical(len))
+               live_project=logical(len),
+	       user_group_ids=character(len))
   for(n in names(result)) {
       is.na(result[[n]])<-TRUE
   }
   result$viewport<-list()
   result$subject_dimensions<-list()
+  result$user_group_ids<-list()
   for(i in seq_along(meta)) {
       l<-rjson::fromJSON(meta[i])
       for(n in names(l)) {
